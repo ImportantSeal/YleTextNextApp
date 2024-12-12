@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">YleTextNext</string>
+    <string name="menu">Valikko</string>
+    <string name="home_page">Etusivu</string>
+    <string name="domestic_news">Kotimaa</string>
+    <string name="foreign_news">Ulkomaat</string>
+    <string name="economy">Talous</string>
+    <string name="stock_exchange">Pörssisivut</string>
+    <string name="news_in_english">Uutiset englanniksi</string>
+    <string name="emergency_warnings">Vaaratiedotteet</string>
+    <string name="regional_news">Alueuutiset</string>
+    <string name="emergency_info">Vaaratiedoteinfo</string>
+    <string name="radiation_safety">Säteilyturvallisuus</string>
+    <string name="favorites">Suosikit</string>
+    <string name="no_favorites">Ei suosikkeja tallennettu.</string>
+    <string name="back">Takaisin</string>
+    <string name="settings">Asetukset</string>
+    <string name="dark_mode">Tumma tila</string>
+    <string name="add_to_favorites">Lisää suosikkeihin</string>
+    <string name="search_page">Syötä sivunumero</string>
+    <string name="search">Hae</string>
+    <string name="loading">Ladataan...</string>
+    <string name="no_content">Ei sisältöä saatavilla.</string>
+    <string name="page_not_found">Sivua ei löytynyt:</string>
+    <string name="teletext">Yle Teksti-TV</string>
+    <string name="page">Sivu</string>
+    <string name="language">Kieli</string>
+    <string name="share">Jaa</string>
+
+
+
+
+</resources>
