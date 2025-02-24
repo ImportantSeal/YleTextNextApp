@@ -35,7 +35,6 @@ class FavoritesManager(private val context: Context) {
     }
 
 //tallennetaan suosikit SharedPreferencesiin
-
     fun saveFavorites() {
         val editor = sharedPreferences.edit()
         val json = gson.toJson(favorites)
@@ -43,10 +42,7 @@ class FavoritesManager(private val context: Context) {
         val success = editor.commit()
         Log.d("FavoritesManager", "Saved favorites successfully: $success, Data: $json")
     }
-
-
 // sivu lisätään suosikkeihin, jos sitä ei ole jo lisätty
-
     fun addFavorite(pageNumber: Int, pageTitle: String) {
         if (!favorites.any { it.first == pageNumber }) {
             favorites.add(Pair(pageNumber, pageTitle))
@@ -57,9 +53,7 @@ class FavoritesManager(private val context: Context) {
         }
     }
 
-
 // Poistaa sivun suosikeista
-
     fun removeFavorite(pageNumber: Int) {
         val removed = favorites.removeAll { it.first == pageNumber }
         if (removed) {

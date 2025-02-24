@@ -27,4 +27,8 @@
     <string name="page">Page</string>
     <string name="language">Language</string>
     <string name="share">Share</string>
+    <string name="remove_from_favorites">Remove from favorite</string>
+    <string name="error_prefix">Error:</string>
+
+
 </resources>

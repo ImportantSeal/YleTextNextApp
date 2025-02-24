@@ -26,8 +26,7 @@
     <string name="page">Sivu</string>
     <string name="language">Kieli</string>
     <string name="share">Jaa</string>
-
-
-
+    <string name="remove_from_favorites">Poista suosikeista</string>
+    <string name="error_prefix">Virhe:</string>
 
 </resources>

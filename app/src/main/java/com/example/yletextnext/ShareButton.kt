@@ -15,43 +15,52 @@ fun ShareButton(
     pageTitle: String,
     teletextData: List<Map<String, Any>>
 ) {
+    // haetaan konteksti composen avulla
     val context = LocalContext.current
 
     IconButton(
         onClick = {
+            // luodaan ja tulostetaan jaettava teksti
             val shareText = buildShareText(pageNumber, pageTitle, teletextData)
-            Log.d("ShareButton", "Share Text:\n$shareText")
+            Log.d("ShareButton", "share text:\n$shareText")
 
-            //jakamisintentin luominen ja valintaikkunan avaus sovelluksille
+            // luodaan intent, jolla avataan sovellusten valintalista
+            // käyttäjä voi valita haluamansa sovelluksen, johon tieto jaetaan
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 type = "text/plain"
-                putExtra(Intent.EXTRA_SUBJECT, "Check out this Teletext page!")
+                putExtra(Intent.EXTRA_SUBJECT, "yletextnext!")
                 putExtra(Intent.EXTRA_TEXT, shareText)
             }
-            context.startActivity(Intent.createChooser(shareIntent, "Share page via"))
+
+            // käynnistetään intentin valintadialogi
+            context.startActivity(Intent.createChooser(shareIntent, "share page via"))
         }
     ) {
-        Icon(Icons.Default.Share, contentDescription = "Jaa sivu")
+        // share-kuvake, joka käynnistää yllä määritetyn toiminnon
+        Icon(Icons.Default.Share, contentDescription = "jaa sivu")
     }
 }
 
-
+// funktio rakentaa jaettavan tekstin tekstitv-sivusta
 fun buildShareText(
     pageNumber: Int,
     pageTitle: String,
     teletextData: List<Map<String, Any>>
 ): String {
     val sb = StringBuilder()
-    sb.append("📺 YleTextNext\n\n")
-    sb.append("📄 Sivu: $pageNumber\n\n")
 
-    // käydään läpi jokainen tekstirivi ja lisää se jakoviestiin
+    // lisätään otsikkotiedot ja sivunumero
+    sb.append("📺 yletextnext\n\n")
+    sb.append("📄 sivu: $pageNumber\n\n")
+
+    // käydään läpi jokainen rivitieto ja lisätään se tekstiin
     teletextData.forEach { line ->
         val text = line["Text"] as? String ?: ""
         sb.append("$text\n")
     }
 
-    sb.append("\n🌐 Katso lisää: https://yle.fi/aihe/tekstitv?P=$pageNumber")
+    // lisätään lopuksi linkki sivuun
+    sb.append("\n🌐 katso lisää: https://yle.fi/aihe/tekstitv?P=$pageNumber")
     return sb.toString()
 }

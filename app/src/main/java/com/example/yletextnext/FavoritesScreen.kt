@@ -1,5 +1,6 @@
 package com.example.yletextnext
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -57,9 +58,11 @@ fun FavoritesScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp),
+                        .padding(vertical = 8.dp)
+                        .clickable { navController.navigate("home?page=$pageNumber") },
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+
                     Column {
                         Text(
                             text = "$pageNumber - $pageTitle",

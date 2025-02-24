@@ -9,12 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.material3.AlertDialogDefaults.shape
@@ -136,6 +131,21 @@ fun HomeScreen(
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
+    // Ladataan kaikki stringResource-tekstit muuttujiksi etukäteen
+    val appName = stringResource(R.string.app_name)
+    val menuText = stringResource(R.string.menu)
+    val removeFromFavoritesText = stringResource(R.string.remove_from_favorites)
+    val addToFavoritesText = stringResource(R.string.add_to_favorites)
+    val settingsText = stringResource(R.string.settings)
+    val homePageText = stringResource(R.string.home_page)
+    val favoritesText = stringResource(R.string.favorites)
+    val pageText = stringResource(R.string.page)
+    val searchText = stringResource(R.string.search)
+    val loadingText = stringResource(R.string.loading)
+    val noContentText = stringResource(R.string.no_content)
+    val pageNotFoundText = stringResource(R.string.page_not_found)
+    val errorPrefixText = stringResource(R.string.error_prefix)
+
     // tilanhallintamuuttujat
     var pageNumber by remember { mutableStateOf(initialPageNumber) }
     var inputPageNumber by remember { mutableStateOf("") }
@@ -165,11 +175,11 @@ fun HomeScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("YleTextNext") },
+                    title = { Text(appName) },
                     // poistetaan navigationIcon kokonaan tai laitetaan sinne jokin muu ikonipainike esim, valikko
                     navigationIcon = {
                         IconButton(onClick = { coroutineScope.launch { drawerState.open() } }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menu")
+                            Icon(Icons.Default.Menu, contentDescription = menuText)
                         }
                     },
                     actions = {
@@ -180,24 +190,24 @@ fun HomeScreen(
                                 onRemoveFavorite(pageNumber)
                             } else {
                                 // lisää suosikkeihin kutsumalla callbackia
-                                onAddFavorite(pageNumber, "Sivu $pageNumber")
+                                onAddFavorite(pageNumber, "$pageText $pageNumber")
                             }
                         }) {
                             Icon(
                                 imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
-                                contentDescription = if (isFavorite) "Poista suosikeista" else "Lisää suosikkeihin"
+                                contentDescription = if (isFavorite) removeFromFavoritesText else addToFavoritesText
                             )
                         }
 
                         ShareButton(
                             pageNumber = pageNumber,
-                            pageTitle = "Sivu $pageNumber", //otsikko
+                            pageTitle = "$pageText $pageNumber", //otsikko
                             teletextData = teletextData ?: emptyList() // sivun sisältö tai tyhjä lista
                         )
 
                         // asetukset painike navigointiin
                         IconButton(onClick = { navController.navigate("settings") }) {
-                            Icon(Icons.Default.Settings, contentDescription = "Asetukset")
+                            Icon(Icons.Default.Settings, contentDescription = settingsText)
                         }
                     }
                 )
@@ -207,37 +217,35 @@ fun HomeScreen(
                 BottomAppBar {
                     // edellinen sivu(näytetään vain jos ollaan yli sivun 100)
                     if (pageNumber > 100) {
-                        Button(onClick = { pageNumber-- }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(16.dp)) {// edelliseen sivuun siirtyminen
+                        Button(onClick = { pageNumber-- }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(16.dp)) {
                             Text("← ${pageNumber - 1}")
                         }
                     } else {
                         Spacer(modifier = Modifier.weight(1f))
                     }
-
-                    // kotisivu-ikoni ja teksti
+                    //koti nappi
                     Column(
                         modifier = Modifier
                             .weight(1f)
                             .clickable { pageNumber = 101 }, // 101 koska se on parempi aloitussivu kun 100
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(Icons.Default.Home, contentDescription = "Kotisivu")
-                        Text("Kotisivu", fontSize = 10.sp)
+                        Icon(Icons.Default.Home, contentDescription = homePageText)
+                        Text(homePageText, fontSize = 10.sp)
                     }
-
-                    // suosikit-ikoni ja teksti
+                    //suosikit
                     Column(
                         modifier = Modifier
                             .weight(1f)
                             .clickable { navController.navigate("favorites") },
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(Icons.Default.Favorite, contentDescription = "Suosikit")
-                        Text("Suosikit", fontSize = 10.sp)
+                        Icon(Icons.Default.Favorite, contentDescription = favoritesText)
+                        Text(favoritesText, fontSize = 10.sp)
                     }
-                    // seuraava sivu
-                    Button(onClick = { pageNumber++ }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(16.dp) ) {
-                        Text("${pageNumber + 1} →")// näytetään seuraavan sivun numero
+
+                    Button(onClick = { pageNumber++ }, modifier = Modifier.weight(1f), shape = RoundedCornerShape(16.dp)) {
+                        Text("${pageNumber + 1} →")
                     }
                 }
             },
@@ -246,7 +254,6 @@ fun HomeScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        // poista fokus koskettamalla, että ei jää häiritsemään taustalle
                         .clickable(
                             indication = null,
                             interactionSource = remember { MutableInteractionSource() }) {
@@ -254,17 +261,12 @@ fun HomeScreen(
                         }
                         .padding(paddingValues)
                         .padding(horizontal = 16.dp, vertical = 8.dp)
-                        // swipe sivujen vaihtamiseen, koska navigointi sormilla on parempi kuin napeipeilla liikkeessä
                         .pointerInput(Unit) {
                             detectHorizontalDragGestures(
-                                // swipen lopetuksen käsittely
                                 onDragEnd = {
                                     if (lastDragAmount > 0) {
-                                        // pyyhkäsy oikeelle: siirry edelliseen sivuun
                                         pageNumber = (pageNumber - 1).coerceAtLeast(100)
                                     } else if (lastDragAmount < 0) {
-                                        // pyyhkäsy vasemmalle: siirry seuraavaa sivuun
-
                                         pageNumber++
                                     }
                                     lastDragAmount = 0f
@@ -275,41 +277,37 @@ fun HomeScreen(
                             )
                         }
                 ) {
-                    // hakukentt
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // tekstikenttä
                         OutlinedTextField(
                             value = inputPageNumber,
                             onValueChange = { inputPageNumber = it },
                             label = {
                                 Text(
-                                    "Sivu: $pageNumber",
+                                    "$pageText: $pageNumber",
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                                 )
                             },
                             singleLine = true,
                             modifier = Modifier.weight(1f)
                         )
-                        Spacer(modifier = Modifier.width(8.dp,))
-                        // Hae button
+                        Spacer(modifier = Modifier.width(8.dp))
                         Button(
                             onClick = {
-                                // muunnetaan syötetty sivunumero ja vaihdetaan sivua
                                 val newPageNumber = inputPageNumber.toIntOrNull()
                                 if (newPageNumber != null) {
                                     pageNumber = newPageNumber
                                 }
-                                inputPageNumber = "" //tyhjennetään kenttä
+                                inputPageNumber = ""
                             },
                             shape = RoundedCornerShape(4.dp),
-                            modifier = Modifier.height(40.dp) // Napin korkeus
+                            modifier = Modifier.height(40.dp)
                         ) {
-                            Text("Hae", fontSize = 14.sp)
+                            Text(searchText, fontSize = 14.sp)
                         }
                     }
 
@@ -320,7 +318,7 @@ fun HomeScreen(
                             .verticalScroll(rememberScrollState())
                     ) {
                         when {
-                            isLoading -> Text("Ladataan...", fontSize = 18.sp)
+                            isLoading -> Text(loadingText, fontSize = 18.sp)
                             errorMessage != null -> Text(errorMessage ?: "", fontSize = 18.sp, color = MaterialTheme.colorScheme.error)
                             else -> {
                                 teletextData?.let { data ->
@@ -328,7 +326,7 @@ fun HomeScreen(
                                         teletextPage = data,
                                         onNavigateToPage = { selectedPage -> pageNumber = selectedPage }
                                     )
-                                } ?: Text("Ei sisältöä saatavilla.", fontSize = 18.sp)
+                                } ?: Text(noContentText, fontSize = 18.sp)
                             }
                         }
                     }
@@ -337,8 +335,7 @@ fun HomeScreen(
         )
     }
 
-
-// launchedEffect lataa sivun sisällön aina sivunumeron muuttuessa
+    // launchedEffect lataa sivun sisällön aina sivunumeron muuttuessa
     LaunchedEffect(pageNumber) {
         isLoading = true
         errorMessage = null // nollaa mahdolliset aiemmat virheviestit
@@ -347,14 +344,13 @@ fun HomeScreen(
             teletextData = getPageContent(pageNumber)
             // tarkistetaan onko sisältöä
             if (teletextData.isNullOrEmpty()) {
-                errorMessage = "Sivua $pageNumber ei löytynyt."
+                errorMessage = "$pageNotFoundText $pageNumber"
             }
         } catch (e: Exception) {
-            errorMessage = "Virhe: ${e.message}"
+            errorMessage = "$errorPrefixText ${e.message}"
         } finally {
             //lopetetaan lataus
             isLoading = false
         }
     }
 }
-
